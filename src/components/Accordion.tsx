@@ -1,16 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import Post from './Post';
+import { PostType } from '../types';
 
-const Accordion = () => {
+type Props = {
+  post: PostType,
+  fetchCommentsByPostId: (id: number) => void;
+  comments: [];
+}
+
+const Accordion = ({
+  post,
+  fetchCommentsByPostId,
+  comments
+}: Props) => {
+  const [visible, setVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!visible) return
+    fetchCommentsByPostId(post.id);
+  }, [visible])
+
+  const toggleComments = () => {
+    setVisible(!visible);
+  }
+
   return (
-    <div className="bg-gray-200 pt-4">
-      <div className="pl-8 pr-8 pb-5 text-grey-darkest">
-        <ul className="pl-4">
-          <li className="pb-2">consectetur adipiscing elit</li>
-          <li className="pb-2">sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</li>
-          <li className="pb-2">Viverra orci sagittis eu volutpat odio facilisis mauris</li>
-        </ul>
-      </div>
-    </div>
+    <>
+      <Post
+        visible={visible}
+        post={post}
+        comments={comments}
+        toggleComments={toggleComments}
+      />
+    </>
   )
 }
 
