@@ -1,47 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { Counter } from './features/counter/Counter';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import './tailwind.generated.css';
-import Service from "./services";
 import { PostType } from './types';
 import Loading from './components/Loading';
 import Accordion from './components/Accordion';
+import {
+  fetchAllPosts,
+  selectPosts
+} from './features/posts/postSlice';
 
 function App() {
-  const [posts, setPosts] = useState<[]>([]);
-  const [commentsPerPost, setCommentsPerPost] = useState<[]>([]);
+  const posts = useSelector(selectPosts);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  const fetchPosts = async () => {
-    const posts = await Service.fetchPosts();
-    setPosts(posts);
-  }
-
-  const fetchCommentsByPostId = async (id: number) => {
-    const comments = await Service.fetchCommentsByPostId(id);
-    setCommentsPerPost(comments);
-  }
+    dispatch(fetchAllPosts());
+  }, [dispatch]);
 
   const renderPosts = () => {
-    return posts && posts.length ? posts.map((post: PostType, index) => (
-      <Accordion
-        post={post}
-        fetchCommentsByPostId={fetchCommentsByPostId}
-        comments={commentsPerPost} key={index} />
-    )) : <Loading message="Loading posts" />
+    if (posts.loading === 'pending') return (<Loading message="Loading posts" />)
+
+    return posts.posts.map((post: PostType) => <Accordion post={post} key={post.id} />)
   }
 
   return (
-    <div className="App max-w-3xl container mx-auto px-16">
+    <div className="App max-w-3xl container mx-auto px-16 mt-10">
       <header className="App-header">
-        <Counter />
-        <h1 className="text-4xl mb-5">Posts</h1>
+        <h1 className="text-4xl">Posts</h1>
+      </header>
+      <div className="my-2">
         <section className="shadow">
           {renderPosts()}
         </section>
-      </header>
+      </div>
     </div>
   );
 }
