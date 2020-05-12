@@ -27,6 +27,27 @@ that specific post.
 - Posts API: https://jsonplaceholder.typicode.com/posts
 - Comments API: https://jsonplaceholder.typicode.com/comments
 
+---
+
+## Tech stack
+
+- CRA
+- Redux & Redux Toolkit
+- Typescript
+- Testing-library/react
+- Axios
+
 ## Assumptions
 
 - User already logged in and with the right credentials
+- Already have an existing Database running and Rest API
+
+## Details
+
+The app works using Redux store/actions/reducers. Where on initialization the app fetches for the posts available and renders them in the DOM. Each Post has the option to read the comments that belongs to it and it has the ability to create a comment (not yet implemented). <br>
+The way it works is as follows, on click the action to fetch the comments is triggered and hits the API endpoint and it fetches the comments for specific postId. After that I manipulate the data received and match it with the corresponding postId and add it to that post's data object, after that I re-render the DOM and toggles the view to show the post's comments.
+
+## Not yet implemented
+
+- Proper unit testing
+- Create comment for each post
