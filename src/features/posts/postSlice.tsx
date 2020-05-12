@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Service from "../../services";
+import { PostType } from '../../types';
 
 export const postsSlice = createSlice({
   name: 'posts',
@@ -27,7 +28,7 @@ export const { postsLoading, postsReceived } = postsSlice.actions;
 export const fetchAllPosts = () => async (dispatch: any) => {
   // @ts-ignore
   dispatch(postsLoading())
-  const response = await Service.fetchPosts();
+  let response: [PostType] = await Service.fetchPosts();
   dispatch(postsReceived(response));
 };
 

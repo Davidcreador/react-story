@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Service from "../../services";
+import { PostType } from '../../types';
 
 export const commentSlice = createSlice({
   name: 'comments',
@@ -16,7 +17,7 @@ export const commentSlice = createSlice({
     commentsReceived: (state: any, action) => {
       if (state.loading === 'pending') {
         state.loading = 'idle'
-        state.comments = [...state.comments, action.payload]
+        state.comments = action.payload
       }
     }
   },
@@ -24,10 +25,11 @@ export const commentSlice = createSlice({
 
 export const { commentsLoading, commentsReceived } = commentSlice.actions;
 
-export const fetchAllCommentsById = (id: number) => async (dispatch: any) => {
+export const fetchAllCommentsById = (post: PostType) => async (dispatch: any) => {
   // @ts-ignore
   dispatch(commentsLoading())
-  const response = await Service.fetchCommentsByPostId(id);
+  const response = await Service.fetchCommentsByPostId(post.id);
+
   dispatch(commentsReceived(response));
 };
 

@@ -3,24 +3,31 @@ import { useSelector, useDispatch } from 'react-redux';
 import './tailwind.generated.css';
 import { PostType } from './types';
 import Loading from './components/Loading';
-import Accordion from './components/Accordion';
+import Post from './components/Post';
 import {
   fetchAllPosts,
   selectPosts
 } from './features/posts/postSlice';
+import {
+  fetchAllCommentsById,
+  selectComments
+} from './features/comments/commentSlice';
 
 function App() {
-  const posts = useSelector(selectPosts);
+  const data = useSelector(selectPosts);
+  const comments = useSelector(selectComments);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchAllPosts());
   }, [dispatch]);
 
-  const renderPosts = () => {
-    if (posts.loading === 'pending') return (<Loading message="Loading posts" />)
+  const fetchComments = (post: PostType) => dispatch(fetchAllCommentsById(post))
 
-    return posts.posts.map((post: PostType) => <Accordion post={post} key={post.id} />)
+  const renderPosts = () => {
+    if (data.loading === 'pending') return (<Loading message="Loading posts" />)
+
+    return data.posts.map((post: PostType) => <Post post={post} key={post.id} comments={comments} fetchComments={fetchComments as any} />)
   }
 
   return (
